@@ -3,6 +3,36 @@
   <head>
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
+    <style>
+      .tweetBox {
+        border: 1px none #000;
+        width: 760px;
+      }
+      
+      .tweet {
+        border: 2px solid #00CCFF;
+        border-radius: 12px;
+        margin: 5px;
+      }
+      
+      .tUser {
+        width: 22%;
+        padding: 1%;
+      }
+      
+      .tTweet {
+        width: 72%;
+        padding: 2%;
+        float: right;
+      }
+      
+      .tTime {
+        margin: 0px;
+        text-indent: 9%;
+        font-size: x-small;
+        color: gray;
+      }
+    </style>
   </head>
   <body>
     <script>
@@ -10,17 +40,92 @@
       $(document).ready(function(){
         var $body = $('body');
         $body.html('');
+        
+        var $tweetBox = $('<div class="tweetBox"></div>');
+        $tweetBox.appendTo($body);
+        
+        var lastTime;
+        
+//         WORK on this later, time permitting...
+//         var $thisTime = $(".tTime").closest("div").find("p");
+//         var timeoutID;
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
-        }
-
+//         var showLongTime = function() {
+//           // alert("in show");
+//           timeoutID = window.setTimeout(function() {
+//             $(".tTime").closest("div").find("p").toggle();
+//             }, 1500);
+//         };
+        
+//         var clearTimeChange = function() {
+//           //alert("in clear");
+//           window.clearTimeout(timeoutID);
+//           $("p").css("display: initial");
+//           //$("#sTime").css("display: inline");
+//           //$("#lTime").css("display: none");
+//         };
+        
+        var refreshWin = function() {
+          var index = streams.home.length - 1;
+            while(index >= 0){
+              var tweet = streams.home[index];
+              var tMessage = tweet.message;
+              
+              var longTime = tweet.created_at;
+              lastTime
+              var hours = longTime.getHours();
+              var minutes = (longTime.getMinutes() > 9) ? longTime.getMinutes() :
+                ( (longTime.getMinutes() > 0) ? '0' + longTime.getMinutes() : '00');
+              var shortTime = '' + (hours % 12) + ':' + minutes;
+              (hours%12 < hours) ? shortTime += ' PM' : shortTime += ' AM';
+              
+              var $tweet = $('<div class="tweet"></div>');
+              var $tUser = $('<div class="tUser"></div>');
+              $tUser.text('@' + tweet.user + ':');
+              
+              var $tTimeS = $('<p class="tTime" id="sTime" style="display:"></p>');
+              var $tTimeL = $('<p class="tTime" id="lTime" style="display: none"></p>');
+              $tTimeS.text(shortTime);
+              $tTimeS.appendTo($tUser);
+              $tTimeL.text(longTime);
+              $tTimeL.appendTo($tUser); // append hidden text to same element
+              
+              var $tTweet = $('<section class="tTweet"></section>');
+              $tTweet.text(tMessage);
+              
+              $tTweet.appendTo($tweet);
+              $tUser.appendTo($tweet);
+              $tweet.appendTo($tweetBox);
+              
+              index -= 1;
+              
+              //  Work on this later, time permitting...
+              //$(".tTime").hover(showLongTime, clearTimeChange);
+              //$(".tTime").click(function() {showLongTime();});
+              //var $thisTime = $(".tTime").closest("div").find("p");
+            }
+            
+            
+            for (var i = 0; i < $(".tTweet").length; i++) {
+              var testStr = ( $(".tTime")[i].innerHTML ) + ( $(".tUser")[i].childNodes[0] );
+              // $(".tweet")[0].outerText
+            } // end for
+            // var tBoxSize = ;
+            
+           
+            
+            
+        };
+        
+        
+        refreshWin(); // display initial tweets
+        
+        window.setInterval(refreshWin, 5000); // function refreshes window every 5 seconds
       });
+      
+      
+      
+      
 
     </script>
   </body>
